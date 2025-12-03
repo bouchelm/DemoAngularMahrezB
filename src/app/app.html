@@ -1,0 +1,15 @@
+<mat-toolbar color="primary">
+<a routerLink="/" class="logo-link">
+ <img src="assets/images/logoTransparent.png" class="logo">
+
+  </a>  <span class="spacer"></span>
+  <button mat-button routerLink="/avions">Avions</button>
+  <button mat-button routerLink="/vols">Vols</button>
+  <button mat-button routerLink="/pistes">Pistes</button>
+  <button mat-button routerLink="/hangars">Hangars</button>
+</mat-toolbar>
+
+<div class="parallax-container">
+  <div class="parallax-bg"></div>
+  <router-outlet></router-outlet>
+</div>
