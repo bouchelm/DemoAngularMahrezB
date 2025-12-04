@@ -1,18 +1,62 @@
-<h3 class="ajout-avion">Ajouter un avion</h3>
+<div class="avion-container">
+  <div class="header">
+    <h1 class="page-title">Gestion des Avions</h1>
+    <button mat-raised-button color="primary" (click)="openAddDialog()" class="add-button">
+      <mat-icon>add</mat-icon>
+      Ajouter un avion
+    </button>
+  </div>
 
-<p>
-  <mat-form-field appearance="fill">
-    <mat-label>Fill form field</mat-label>
-    <input matInput placeholder="Placeholder">
-    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-    <mat-hint>Hint</mat-hint>
-  </mat-form-field>
-</p>
-<p>
-  <mat-form-field appearance="outline">
-    <mat-label>Outline form field</mat-label>
-    <input matInput placeholder="Placeholder">
-    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-    <mat-hint>Hint</mat-hint>
-  </mat-form-field>
-</p>
+  <div class="table-container">
+    <table mat-table [dataSource]="avions" class="avion-table">
+      <ng-container matColumnDef="immatriculation">
+        <th mat-header-cell *matHeaderCellDef>Immatriculation</th>
+        <td mat-cell *matCellDef="let avion">{{ avion.immatriculation }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef>Type</th>
+        <td mat-cell *matCellDef="let avion">{{ avion.type }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="capacity">
+        <th mat-header-cell *matHeaderCellDef>Capacité</th>
+        <td mat-cell *matCellDef="let avion">{{ avion.capacity }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="etat">
+        <th mat-header-cell *matHeaderCellDef>État</th>
+        <td mat-cell *matCellDef="let avion">
+          <span class="etat-badge" [ngClass]="'etat-' + avion.etat.toLowerCase()">
+            {{ avion.etat }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let avion">
+          <button mat-icon-button color="primary" (click)="openEditDialog(avion)" matTooltip="Modifier">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="openDeleteDialog(avion)" matTooltip="Supprimer">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button color="accent" (click)="openAssignVolDialog(avion)" matTooltip="Assigner à un vol">
+            <mat-icon>flight_takeoff</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    @if (avions.length === 0) {
+      <div class="no-data">
+        <mat-icon>flight</mat-icon>
+        <p>Aucun avion enregistré</p>
+      </div>
+    }
+  </div>
+</div>

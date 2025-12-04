@@ -1,1 +1,156 @@
-<p>vol works!</p>
+<div class="vol-container">
+  <div class="header">
+    <h1 class="page-title">Gestion des Vols</h1>
+    <button mat-raised-button color="primary" (click)="ouvrirDialogueAjout()" class="add-button">
+      <mat-icon>add</mat-icon>
+      Ajouter un vol
+    </button>
+  </div>
+
+  <div class="stats-container">
+    <mat-card class="stat-card stat-total">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>flight</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ nombreTotal }}</span>
+          <span class="stat-label">Total des vols</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card stat-en-cours">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>flight_takeoff</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ nombreEnCours }}</span>
+          <span class="stat-label">En cours</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card stat-prevus">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ nombrePrevus }}</span>
+          <span class="stat-label">Prévus</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card stat-termines">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>flight_land</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ nombreTermines }}</span>
+          <span class="stat-label">Terminés/Annulés</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="filtres-container">
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrer par statut</mat-label>
+      <mat-select [(ngModel)]="filtreStatut" (selectionChange)="appliquerFiltres()">
+        <mat-option [value]="null">Tous les statuts</mat-option>
+        @for (s of statuts; track s) {
+          <mat-option [value]="s">{{ s }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrer par origine</mat-label>
+      <mat-select [(ngModel)]="filtreOrigine" (selectionChange)="appliquerFiltres()">
+        <mat-option [value]="null">Toutes les origines</mat-option>
+        @for (v of villes; track v) {
+          <mat-option [value]="v">{{ v }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrer par destination</mat-label>
+      <mat-select [(ngModel)]="filtreDestination" (selectionChange)="appliquerFiltres()">
+        <mat-option [value]="null">Toutes les destinations</mat-option>
+        @for (v of villes; track v) {
+          <mat-option [value]="v">{{ v }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-stroked-button (click)="reinitialiserFiltres()" class="reset-button">
+      <mat-icon>refresh</mat-icon>
+      Réinitialiser
+    </button>
+  </div>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="volsFiltres" class="vol-table">
+      <ng-container matColumnDef="numero">
+        <th mat-header-cell *matHeaderCellDef>Numéro</th>
+        <td mat-cell *matCellDef="let vol">{{ vol.numero }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="origine">
+        <th mat-header-cell *matHeaderCellDef>Origine</th>
+        <td mat-cell *matCellDef="let vol">{{ vol.origine }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="destination">
+        <th mat-header-cell *matHeaderCellDef>Destination</th>
+        <td mat-cell *matCellDef="let vol">{{ vol.destination }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="horaire">
+        <th mat-header-cell *matHeaderCellDef>Horaire</th>
+        <td mat-cell *matCellDef="let vol">{{ formaterHoraire(vol.horaire) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="statut">
+        <th mat-header-cell *matHeaderCellDef>Statut</th>
+        <td mat-cell *matCellDef="let vol">
+          <span class="statut-badge" [ngClass]="'statut-' + vol.statut.toLowerCase()">
+            {{ vol.statut }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="avion">
+        <th mat-header-cell *matHeaderCellDef>Avion</th>
+        <td mat-cell *matCellDef="let vol">{{ vol.avionImmatriculation || '-' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let vol">
+          <button mat-icon-button color="primary" (click)="ouvrirDialogueModification(vol)" matTooltip="Modifier">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="confirmerSuppression(vol)" matTooltip="Supprimer">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="colonnesAffichees"></tr>
+      <tr mat-row *matRowDef="let row; columns: colonnesAffichees;"></tr>
+    </table>
+
+    @if (volsFiltres.length === 0) {
+      <div class="no-data">
+        <mat-icon>flight</mat-icon>
+        <p>Aucun vol enregistré</p>
+      </div>
+    }
+  </div>
+</div>
