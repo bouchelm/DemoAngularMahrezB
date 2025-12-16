@@ -1,1 +1,104 @@
-<p>piste works!</p>
+<div class="piste-container">
+  <div class="header">
+    <h1 class="page-title">Gestion des Pistes</h1>
+    <button mat-raised-button color="primary" (click)="ouvrirDialogueAjout()" class="add-button">
+      <mat-icon>add</mat-icon>
+      Ajouter une piste
+    </button>
+  </div>
+
+  <div class="stats-container">
+    <mat-card class="stat-card stat-total">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>airplanemode_active</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ nombreTotal }}</span>
+          <span class="stat-label">Total des pistes</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card stat-libres">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ nombreLibres }}</span>
+          <span class="stat-label">Libres</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card stat-occupees">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>block</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ nombreOccupees }}</span>
+          <span class="stat-label">Occupées</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card stat-maintenance">
+      <mat-card-content>
+        <div class="stat-icon">
+          <mat-icon>build</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ nombreMaintenance }}</span>
+          <span class="stat-label">Maintenance</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="mesPistes" class="piste-table">
+      <ng-container matColumnDef="identifiant">
+        <th mat-header-cell *matHeaderCellDef>Identifiant</th>
+        <td mat-cell *matCellDef="let piste">{{ piste.identifiant }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="longueur">
+        <th mat-header-cell *matHeaderCellDef>Longueur (m)</th>
+        <td mat-cell *matCellDef="let piste">{{ piste.longueur }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="etat">
+        <th mat-header-cell *matHeaderCellDef>État</th>
+        <td mat-cell *matCellDef="let piste">
+          <span class="etat-badge" [ngClass]="'etat-' + piste.etat.toLowerCase()">
+            {{ piste.etat }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let piste">
+          <button mat-icon-button color="primary" (click)="ouvrirDialogueModification(piste)" matTooltip="Modifier">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="confirmerSuppression(piste)" matTooltip="Supprimer">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="colonnesAffichees"></tr>
+      <tr mat-row *matRowDef="let row; columns: colonnesAffichees;"></tr>
+    </table>
+
+    @if (mesPistes.length === 0) {
+      <div class="no-data">
+        <mat-icon>airplanemode_active</mat-icon>
+        <p>Aucune piste enregistrée</p>
+      </div>
+    }
+  </div>
+</div>

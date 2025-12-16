@@ -1,14 +1,16 @@
 import { Routes } from '@angular/router';
 import { AvionComponent } from './components/avion/avion';
 import { VolComponent } from './components/vol/vol';
-import { Piste } from './components/piste/piste';
-import { Hangar } from './components/hangar/hangar';
+import { PisteComponent } from './components/piste/piste';
+import { HangarComponent } from './components/hangar/hangar';
+import { TraficComponent } from './components/trafic/trafic.component';
 import { PageAcceuil } from './components/page-acceuil/page-acceuil';
 
 export const routes: Routes = [
     { path: '', component: PageAcceuil },
   { path: 'avions', component: AvionComponent },
   { path: 'vols', component: VolComponent },
-  { path: 'pistes', component: Piste },
-  { path: 'hangars', component: Hangar }
+  { path: 'pistes', component: PisteComponent },
+  { path: 'hangars', component: HangarComponent },
+  { path: 'trafic', component: TraficComponent }
 ];
